@@ -20,11 +20,10 @@ import (
 type (
 	// Конфигурация
 	Config struct {
-		Host     string        `toml:"host"`     // Хост
-		Password string        `toml:"password"` // Пароль
-		DB       int           `toml:"db"`       // База (номер)
-		TimeoutS string        `toml:"timeout"`  // Строчное представление таймаута
-		Timeout  time.Duration `toml:"-"`        // Таймаут
+		Host     string          `toml:"host"`     // Хост
+		Password string          `toml:"password"` // Пароль
+		DB       int             `toml:"db"`       // База (номер)
+		Timeout  config.Duration `toml:"timeout"`  // Таймаут
 
 	}
 
@@ -52,11 +51,6 @@ func (x *Config) Check(cfg interface{}) (err error) {
 		msgs.Add(`host: is empty or undefined`)
 	}
 
-	x.Timeout, err = misc.Interval2Duration(x.TimeoutS)
-	if err != nil {
-		msgs.Add(`timeout: %s`, err)
-	}
-
 	if x.Timeout <= 0 {
 		x.Timeout = config.ClientDefaultTimeout
 	}
@@ -74,8 +68,8 @@ func New(cfg *Config) *Connection {
 				Addr:        cfg.Host,
 				Password:    cfg.Password,
 				DB:          cfg.DB,
-				DialTimeout: cfg.Timeout,
-				ReadTimeout: cfg.Timeout,
+				DialTimeout: time.Duration(cfg.Timeout),
+				ReadTimeout: time.Duration(cfg.Timeout),
 			},
 		),
 	}
@@ -164,7 +158,7 @@ func (r *Connection) HLoadSelected(key string, list []string) (misc.StringMap, e
 	}
 
 	if len(iData) != len(list) {
-		return nil, fmt.Errorf("illegal results count %d, expected %d", len(iData), len(list))
+		return nil, fmt.Errorf("illegal results count %d, %d expected", len(iData), len(list))
 	}
 
 	mData := make(misc.StringMap, len(iData))

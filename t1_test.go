@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/alrusov/config"
 	"github.com/go-redis/redis/v8"
 )
 
@@ -16,7 +17,7 @@ var (
 		Host:     "localhost:6379",
 		Password: "",
 		DB:       4,
-		Timeout:  10 * time.Second,
+		Timeout:  10 * config.Duration(time.Second),
 	}
 )
 
@@ -75,7 +76,7 @@ func testHSave(t *testing.T, count int) {
 	}
 
 	if len(result) != count {
-		err = fmt.Errorf("found %d records, expected %d", len(result), count)
+		err = fmt.Errorf("found %d records, %d expected", len(result), count)
 		t.Fatal(err)
 	}
 
