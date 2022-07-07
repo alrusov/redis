@@ -1,11 +1,11 @@
 module github.com/alrusov/redis
 
-go 1.17
+go 1.18
 
 require (
-	github.com/alrusov/config v0.1.44
-	github.com/alrusov/misc v0.1.49
-	github.com/go-redis/redis/v8 v8.11.4
+	github.com/alrusov/config v0.1.46
+	github.com/alrusov/misc v0.1.56
+	github.com/go-redis/redis/v8 v8.11.5
 )
 
 require (

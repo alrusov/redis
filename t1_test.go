@@ -76,7 +76,7 @@ func testHSave(t *testing.T, count int) {
 	}
 
 	if len(result) != count {
-		err = fmt.Errorf("found %d records, %d expected", len(result), count)
+		err = fmt.Errorf("found %d records, expected %d", len(result), count)
 		t.Fatal(err)
 	}
 

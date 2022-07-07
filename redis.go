@@ -151,6 +151,10 @@ func (r *Connection) HLoad(key string) (misc.StringMap, error) {
 
 // Загрузить из hashtable данные по списку
 func (r *Connection) HLoadSelected(key string, list []string) (misc.StringMap, error) {
+	if len(list) == 0 {
+		return misc.StringMap{}, nil
+	}
+
 	res := r.client.HMGet(context.Background(), key, list...)
 	iData, err := res.Result()
 	if err != nil {
@@ -181,6 +185,10 @@ func (r *Connection) HLen(key string) (int, error) {
 
 // Удалить из hashtable данные по списку
 func (r *Connection) HDel(key string, list []string) error {
+	if len(list) == 0 {
+		return nil
+	}
+
 	return r.client.HDel(context.Background(), key, list...).Err()
 }
 
