@@ -23,7 +23,7 @@ var (
 
 //----------------------------------------------------------------------------------------------------------------------------//
 
-func TestLoadSelected(t *testing.T) {
+func xTestLoadSelected(t *testing.T) {
 	conn := New(testConn)
 
 	list := []string{"TestComm_Tag_4", "TestComm_Tag_1", "TestComm_Tag_2", "TestComm_Tag_3", "TestComm_Tag_NOtag1", "TestComm_Tag_NOtag2", "TestComm_Tag_5"}
@@ -37,7 +37,7 @@ func TestLoadSelected(t *testing.T) {
 
 //----------------------------------------------------------------------------------------------------------------------------//
 
-func TestHSave(t *testing.T) {
+func xTestHSave(t *testing.T) {
 	testHSave(t, 0)
 	testHSave(t, 1)
 	testHSave(t, 2)

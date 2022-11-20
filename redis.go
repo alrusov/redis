@@ -44,7 +44,7 @@ const (
 //----------------------------------------------------------------------------------------------------------------------------//
 
 // Проверка валидности Config
-func (x *Config) Check(cfg interface{}) (err error) {
+func (x *Config) Check(cfg any) (err error) {
 	msgs := misc.NewMessages()
 
 	if x.Host == "" {
@@ -202,24 +202,24 @@ func (r *Connection) QLen(key string) (int, error) {
 
 // Добавить в конец очереди
 // BDRV-2440: Максимальный размер строки в data 536870912 (2**29, полгига)
-func (r *Connection) QPush(key string, data interface{}) error {
+func (r *Connection) QPush(key string, data any) error {
 	return r.client.RPush(context.Background(), key, data).Err()
 }
 
 // Получить из начала очереди с удалением
-func (r *Connection) QPop(key string) (interface{}, error) {
+func (r *Connection) QPop(key string) (any, error) {
 	v := r.client.LPop(context.Background(), key)
 	return v.Val(), v.Err()
 }
 
 // Получить из очереди с таймаутом
-func (r *Connection) QPopWithTimeout(timeout time.Duration, key ...string) (interface{}, error) {
+func (r *Connection) QPopWithTimeout(timeout time.Duration, key ...string) (any, error) {
 	v := r.client.BLPop(context.Background(), timeout, key...)
 	return v.Val(), v.Err()
 }
 
 // Получить из начала очереди без уделения
-func (r *Connection) QRead(key string) (interface{}, error) {
+func (r *Connection) QRead(key string) (any, error) {
 	v := r.client.LIndex(context.Background(), key, 0)
 	return v.Val(), v.Err()
 }
