@@ -12,7 +12,7 @@ import (
 	"github.com/alrusov/config"
 	"github.com/alrusov/misc"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 //----------------------------------------------------------------------------------------------------------------------------//
@@ -33,7 +33,7 @@ type (
 	}
 
 	// zrange
-	ZMembers []*redis.Z
+	ZMembers []redis.Z
 )
 
 const (

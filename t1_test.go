@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/alrusov/config"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 //----------------------------------------------------------------------------------------------------------------------------//
@@ -112,8 +112,6 @@ func testHSave(t *testing.T, count int) {
 //----------------------------------------------------------------------------------------------------------------------------//
 
 func BenchmarkHSaveSimple(b *testing.B) {
-	key := "___redis.BenchmarkHSaveSimple___"
-
 	conn := New(testConn)
 
 	n := b.N
@@ -133,7 +131,9 @@ func BenchmarkHSaveSimple(b *testing.B) {
 	}
 	b.StopTimer()
 
-	conn.DeleteTable(key)
+	for i := 0; i < n; i++ {
+		conn.DeleteTable(keys[i])
+	}
 
 	if err != nil {
 		b.Fatal(err)
@@ -249,7 +249,7 @@ func testZSave(b *testing.B, key string, withReset bool) (*Connection, error) {
 	members := make(ZMembers, n)
 
 	for i := 0; i < n; i++ {
-		members[i] = &redis.Z{
+		members[i] = redis.Z{
 			Score: float64(i),
 			Member: fmt.Sprintf(`{"id":%d,"name":"CalcMass%d","template":"Calc_Mass","status":%d,"datetime":"2020-06-07T01:02:%dZ","value":%f}`,
 				i, i, i%256, i%60, float64(i)*float64(i)),
