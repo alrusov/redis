@@ -20,11 +20,13 @@ import (
 type (
 	// Конфигурация
 	Config struct {
-		Host     string          `toml:"host"`     // Хост
-		Password string          `toml:"password"` // Пароль
-		DB       int             `toml:"db"`       // База (номер)
-		Timeout  config.Duration `toml:"timeout"`  // Таймаут
-
+		Host          string          `toml:"host"`          // Хост
+		Password      string          `toml:"password"`      // Пароль
+		DB            int             `toml:"db"`            // База (номер)
+		Timeout       config.Duration `toml:"timeout"`       // Таймаут
+		Failover      bool            `toml:"failover"`      // with sentinel
+		MasterName    string          `toml:"masterName"`    // The master name
+		SentinelAddrs []string        `toml:"sentinelAddrs"` // A seed list of host:port addresses of sentinel nodes
 	}
 
 	// Соединение
@@ -62,16 +64,34 @@ func (x *Config) Check(cfg any) (err error) {
 
 // Создать соединение
 func New(cfg *Config) *Connection {
-	return &Connection{
-		client: redis.NewClient(
-			&redis.Options{
-				Addr:        cfg.Host,
-				Password:    cfg.Password,
-				DB:          cfg.DB,
-				DialTimeout: time.Duration(cfg.Timeout),
-				ReadTimeout: time.Duration(cfg.Timeout),
-			},
-		),
+	if cfg.Failover {
+		return &Connection{
+			client: redis.NewFailoverClient(
+				&redis.FailoverOptions{
+					MasterName:    cfg.MasterName,
+					SentinelAddrs: cfg.SentinelAddrs,
+					Password:      cfg.Password,
+					DB:            cfg.DB,
+					DialTimeout:   time.Duration(cfg.Timeout),
+					ReadTimeout:   time.Duration(cfg.Timeout),
+					WriteTimeout:  time.Duration(cfg.Timeout),
+				},
+			),
+		}
+
+	} else {
+		return &Connection{
+			client: redis.NewClient(
+				&redis.Options{
+					Addr:         cfg.Host,
+					Password:     cfg.Password,
+					DB:           cfg.DB,
+					DialTimeout:  time.Duration(cfg.Timeout),
+					ReadTimeout:  time.Duration(cfg.Timeout),
+					WriteTimeout: time.Duration(cfg.Timeout),
+				},
+			),
+		}
 	}
 }
 
