@@ -123,6 +123,13 @@ func (r *Connection) Ping() error {
 
 //----------------------------------------------------------------------------------------------------------------------------//
 
+func (r *Connection) Keys(pattern string) ([]string, error) {
+	res := r.client.Keys(context.Background(), pattern)
+	return res.Result()
+}
+
+//----------------------------------------------------------------------------------------------------------------------------//
+
 // Сохранить данные в hashtable
 func (r *Connection) HSave(key string, data []string) error {
 	ln := len(data)
